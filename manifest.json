@@ -1,0 +1,49 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.16",
+  "version": "1.0.3",
+  "id": "721e13ff-fce7-4d14-a576-53cacf015170",
+  "packageName": "com.acsacademy.codered",
+  "developer": {
+    "name": "ACS Academy",
+    "websiteUrl": "https://acsacademysg.sharepoint.com",
+    "privacyUrl": "https://acsacademysg.sharepoint.com",
+    "termsOfUseUrl": "https://acsacademysg.sharepoint.com"
+  },
+  "name": {
+    "short": "ACS(A) Code Red",
+    "full": "ACS(A) Code Red - Form Teachers"
+  },
+  "description": {
+    "short": "Code Red emergency location submission app",
+    "full": "Submit emergency location information for form teachers during code red situations"
+  },
+  "icons": {
+    "outline": "icon-outline.png",
+    "color": "icon-color.png"
+  },
+  "accentColor": "#AC0027",
+  "staticTabs": [
+    {
+      "entityId": "codered",
+      "name": "Code Red",
+      "contentUrl": "https://white-hill-0d8f99200.1.azurestaticapps.net/index.html",
+      "websiteUrl": "https://white-hill-0d8f99200.1.azurestaticapps.net/index.html",
+      "scopes": ["personal"]
+    }
+  ],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": [
+    "*.azurestaticapps.net",
+    "*.netlify.app",
+    "*.acsacademy.edu.sg"
+  ],
+  "webApplicationInfo": {
+    "id": "721e13ff-fce7-4d14-a576-53cacf015170",
+    "resource": "api://white-hill-0d8f99200.1.azurestaticapps.net/721e13ff-fce7-4d14-a576-53cacf015170"
+  }
+}
+

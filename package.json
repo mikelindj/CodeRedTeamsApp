@@ -1,0 +1,28 @@
+{
+  "name": "code-red-teams-app",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:server": "node server.js",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
+    "build": "vite build",
+    "package": "npm run build && node package-teams-app.js"
+  },
+  "dependencies": {
+    "@fluentui/react-components": "^9.49.0",
+    "@fluentui/react-icons": "^2.0.237",
+    "@microsoft/teams-js": "^2.47.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
+    "vite": "^5.0.8"
+  }
+}
