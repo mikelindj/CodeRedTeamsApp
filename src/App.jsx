@@ -111,7 +111,7 @@ const useStyles = makeStyles({
   },
   cardTitle: {
     margin: 0,
-    fontSize: '32px',
+    fontSize: '18px',
     fontWeight: 600,
     color: tokens.colorNeutralForeground1,
     textAlign: 'center',
