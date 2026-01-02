@@ -25,7 +25,7 @@ import {
 import { Dismiss24Regular, Send24Regular } from '@fluentui/react-icons';
 
 const SHAREPOINT_SITE_URL = "https://acsacademysg.sharepoint.com/sites/allstaff";
-const LIST_NAME = "Form Teachers";
+const LIST_NAME = "Code Red Locations";
 const WEBHOOK_URL = "https://default6dff32de1cd04ada892b2298e1f616.98.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/bc5cce4c0d4f42e9bd42cf926663b8be/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qy1Mu92ciK4-IZBKVTIIVgBm9d6ZWbcnZqD35YoqUjY";
 
 // Backend API URL
@@ -236,9 +236,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Modal state
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [location, setLocation] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -313,30 +310,31 @@ function App() {
     return title;
   };
 
-  const handleCardClick = (item) => {
-    setSelectedItem(item);
-    setLocation('');
-  };
-
-  const handleCloseModal = () => {
-    setSelectedItem(null);
-    setLocation('');
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!location.trim()) return;
+  const handleCardClick = async (item) => {
+    if (isSubmitting) return; // Prevent multiple submissions
 
     setIsSubmitting(true);
 
-    // Create payload
-    const payload = {
-      class: selectedItem.title,
-      location: location.trim(),
-      'date-time': new Date().toISOString()
-    };
-
     try {
+      // Get user context from Teams SDK to get email
+      let userEmail = '';
+      if (window.microsoftTeams) {
+        try {
+          const context = await window.microsoftTeams.app.getContext();
+          userEmail = context.user?.userPrincipalName || context.user?.loginHint || '';
+          console.log('User email:', userEmail);
+        } catch (err) {
+          console.warn('Could not get user context:', err);
+        }
+      }
+
+      // Create payload
+      const payload = {
+        location: item.title,
+        'date-time': new Date().toISOString(),
+        userEmail: userEmail
+      };
+
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 
@@ -348,7 +346,6 @@ function App() {
       });
       
       if (response.ok) {
-        handleCloseModal();
         alert('Location submitted successfully!');
       } else if (response.status === 401) {
         throw new Error('Authentication failed. Please check Power Automate flow settings or add authentication headers.');
@@ -413,6 +410,11 @@ function App() {
                     key={item.id}
                     className={styles.card}
                     onClick={() => handleCardClick(item)}
+                    style={{ 
+                      opacity: isSubmitting ? 0.6 : 1,
+                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                      pointerEvents: isSubmitting ? 'none' : 'auto'
+                    }}
                   >
                     <CardHeader
                       className={styles.cardHeader}
@@ -431,71 +433,6 @@ function App() {
           </>
         )}
 
-        {/* Modal/Dialog */}
-        <Dialog open={selectedItem !== null} onOpenChange={(_, data) => {
-          if (!data.open) handleCloseModal();
-        }}>
-          <DialogSurface className={styles.dialogSurface}>
-            <div className={styles.dialogSurfaceContainer}>
-              <Button
-                appearance="subtle"
-                aria-label="close"
-                icon={<Dismiss24Regular />}
-                onClick={handleCloseModal}
-                size="large"
-                className={styles.closeButton}
-              />
-              <DialogTitle
-                style={{ fontSize: '24px', fontWeight: 600, paddingRight: '48px' }}
-              >
-                Enter Location
-              </DialogTitle>
-            <DialogBody>
-              <DialogContent>
-                <div style={{ marginBottom: '20px', padding: '12px', backgroundColor: tokens.colorNeutralBackground2, borderRadius: tokens.borderRadiusMedium }}>
-                  <Text weight="semibold" size={500}>Class: </Text>
-                  <Text size={500}>{selectedItem?.title}</Text>
-                </div>
-
-                <form onSubmit={handleSubmit} id="location-form">
-                  <Label htmlFor="location-input" required style={{ fontWeight: 600, fontSize: '16px', marginBottom: '12px', display: 'block' }}>
-                    Location
-                  </Label>
-                  <Input
-                    id="location-input"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Enter location..."
-                    autoFocus
-                    required
-                    className={styles.input}
-                    style={{ marginBottom: '24px', width: '100%' }}
-                  />
-                </form>
-              </DialogContent>
-              <DialogActions className={styles.dialogActions}>
-                <Button
-                  appearance="secondary"
-                  onClick={handleCloseModal}
-                  className={styles.dialogButtonCancel}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  appearance="primary"
-                  type="submit"
-                  form="location-form"
-                  disabled={isSubmitting || !location.trim()}
-                  icon={<Send24Regular />}
-                  className={styles.dialogButtonSubmit}
-                >
-                  {isSubmitting ? 'Submitting...' : 'Submit'}
-                </Button>
-              </DialogActions>
-            </DialogBody>
-            </div>
-          </DialogSurface>
-        </Dialog>
       </div>
     </FluentProvider>
   );

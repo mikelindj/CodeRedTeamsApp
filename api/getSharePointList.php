@@ -28,7 +28,7 @@ $TENANT_ID = getenv('AZURE_TENANT_ID');
 // SharePoint Configuration
 $SHAREPOINT_HOSTNAME = 'acsacademysg.sharepoint.com';
 $SITE_NAME = 'allstaff';
-$LIST_NAME = 'Form Teachers';
+$LIST_NAME = 'Code Red Locations';
 
 // Validate configuration
 if (empty($CLIENT_ID) || empty($CLIENT_SECRET) || empty($TENANT_ID)) {
