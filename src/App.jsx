@@ -316,13 +316,13 @@ function App() {
     setIsSubmitting(true);
 
     try {
-      // Get user context from Teams SDK to get email
-      let userEmail = '';
+      // Get user context from Teams SDK to get principal user name
+      let userPrincipalName = '';
       if (window.microsoftTeams) {
         try {
           const context = await window.microsoftTeams.app.getContext();
-          userEmail = context.user?.userPrincipalName || context.user?.loginHint || '';
-          console.log('User email:', userEmail);
+          userPrincipalName = context.user?.userPrincipalName || context.user?.loginHint || '';
+          console.log('User principal name:', userPrincipalName);
         } catch (err) {
           console.warn('Could not get user context:', err);
         }
@@ -332,7 +332,7 @@ function App() {
       const payload = {
         location: item.title,
         'date-time': new Date().toISOString(),
-        userEmail: userEmail
+        userPrincipalName: userPrincipalName
       };
 
       const response = await fetch(WEBHOOK_URL, {
@@ -370,8 +370,8 @@ function App() {
         {/* Header */}
         <div className={styles.header}>
           <Title1 className={styles.headerTitle}>ACS(A) Code Red</Title1>
-          <Text size={400} style={{ color: 'white', opacity: 0.9, fontSize: '16px' }}>
-            {items.length} classes loaded
+          <Text size={400} style={{ color: 'white', opacity: 0.9, fontSize: '16px' , display:'block' }}>
+            {items.length} locations loaded
           </Text>
         </div>
 
